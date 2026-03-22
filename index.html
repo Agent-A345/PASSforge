@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PASSforge — Secure Password Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Background grid -->
+  <div class="bg-grid"></div>
+  <div class="scanline"></div>
+
+  <div class="app-wrapper">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo-mark">
+          <span class="logo-bracket">[</span>
+          <span class="logo-icon">⬡</span>
+          <span class="logo-bracket">]</span>
+        </div>
+        <div class="header-text">
+          <h1 class="app-title">PASSFORGE</h1>
+          <p class="app-sub">Cryptographic Password Generator</p>
+        </div>
+      </div>
+      <button class="smart-mode-btn" id="smartModeBtn">
+        <span class="btn-icon">⚡</span>
+        <span>SMART MODE</span>
+      </button>
+    </header>
+
+    <!-- ═══ MAIN DISPLAY ═══ -->
+    <section class="display-section glass-card">
+      <div class="section-label">GENERATED PASSWORD</div>
+
+      <div class="password-box" id="passwordBox">
+        <div class="password-display" id="passwordDisplay" aria-label="Generated password">
+          <span class="pw-placeholder">Click GENERATE to create password</span>
+        </div>
+        <div class="display-actions">
+          <button class="icon-btn" id="revealBtn" title="Show/Hide password" aria-label="Toggle password visibility">
+            <svg class="eye-icon" id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-off-icon hidden" id="eyeOffIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+          <button class="icon-btn copy-btn" id="copyBtn" title="Copy to clipboard" aria-label="Copy password">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Strength Meter -->
+      <div class="strength-section">
+        <div class="strength-bar-wrap">
+          <div class="strength-bar" id="strengthBar">
+            <div class="strength-fill" id="strengthFill"></div>
+          </div>
+          <div class="strength-segments">
+            <div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+          </div>
+        </div>
+        <div class="strength-meta">
+          <span class="strength-label" id="strengthLabel">—</span>
+          <span class="crack-time" id="crackTime">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ CONTROLS ═══ -->
+    <section class="controls-section">
+
+      <!-- Length Slider -->
+      <div class="glass-card control-card">
+        <div class="section-label">PASSWORD LENGTH</div>
+        <div class="slider-row">
+          <span class="slider-val-label">8</span>
+          <div class="slider-wrap">
+            <input type="range" id="lengthSlider" min="8" max="32" value="16" class="slider" aria-label="Password length" />
+            <div class="slider-track-fill" id="sliderTrackFill"></div>
+          </div>
+          <span class="slider-val-label">32</span>
+          <div class="length-badge" id="lengthBadge">16</div>
+        </div>
+      </div>
+
+      <!-- Toggles -->
+      <div class="glass-card control-card">
+        <div class="section-label">CHARACTER TYPES</div>
+        <div class="toggles-grid">
+          <label class="toggle-row" for="upperToggle">
+            <div class="toggle-info">
+              <span class="toggle-icon">A</span>
+              <div>
+                <span class="toggle-name">Uppercase</span>
+                <span class="toggle-hint">A–Z</span>
+              </div>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="upperToggle" checked aria-label="Include uppercase letters" />
+              <span class="toggle-thumb"></span>
+            </div>
+          </label>
+
+          <label class="toggle-row" for="lowerToggle">
+            <div class="toggle-info">
+              <span class="toggle-icon">a</span>
+              <div>
+                <span class="toggle-name">Lowercase</span>
+                <span class="toggle-hint">a–z</span>
+              </div>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="lowerToggle" checked aria-label="Include lowercase letters" />
+              <span class="toggle-thumb"></span>
+            </div>
+          </label>
+
+          <label class="toggle-row" for="numToggle">
+            <div class="toggle-info">
+              <span class="toggle-icon">0</span>
+              <div>
+                <span class="toggle-name">Numbers</span>
+                <span class="toggle-hint">0–9</span>
+              </div>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="numToggle" checked aria-label="Include numbers" />
+              <span class="toggle-thumb"></span>
+            </div>
+          </label>
+
+          <label class="toggle-row" for="symToggle">
+            <div class="toggle-info">
+              <span class="toggle-icon">#</span>
+              <div>
+                <span class="toggle-name">Symbols</span>
+                <span class="toggle-hint">!@#$%…</span>
+              </div>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="symToggle" aria-label="Include special characters" />
+              <span class="toggle-thumb"></span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Passphrase Toggle -->
+      <div class="glass-card control-card passphrase-card">
+        <div class="passphrase-row">
+          <div class="toggle-info">
+            <span class="toggle-icon">💬</span>
+            <div>
+              <span class="toggle-name">Passphrase Mode</span>
+              <span class="toggle-hint">Diceware-style memorable words</span>
+            </div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="passphraseToggle" aria-label="Enable passphrase mode" />
+            <span class="toggle-thumb"></span>
+          </div>
+        </div>
+        <div class="passphrase-options hidden" id="passphraseOptions">
+          <div class="slider-row slim">
+            <span class="slider-val-label">4</span>
+            <div class="slider-wrap">
+              <input type="range" id="wordCountSlider" min="4" max="8" value="5" class="slider" aria-label="Word count" />
+              <div class="slider-track-fill" id="wordTrackFill"></div>
+            </div>
+            <span class="slider-val-label">8</span>
+            <div class="length-badge" id="wordBadge">5 words</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate Button -->
+      <button class="generate-btn" id="generateBtn">
+        <span class="gen-icon">⬡</span>
+        <span class="gen-text">GENERATE PASSWORD</span>
+        <span class="gen-shimmer"></span>
+      </button>
+
+      <!-- Warning -->
+      <div class="warning-msg hidden" id="warningMsg">
+        <span class="warn-icon">⚠</span>
+        Select at least one character type to generate a password.
+      </div>
+
+    </section>
+
+    <!-- ═══ ENTROPY ═══ -->
+    <section class="glass-card entropy-card">
+      <div class="entropy-header">
+        <div class="section-label">ENTROPY ANALYSIS</div>
+        <span class="entropy-value" id="entropyValue">0 bits</span>
+      </div>
+      <div class="entropy-bar-wrap">
+        <div class="entropy-bar">
+          <div class="entropy-fill" id="entropyFill"></div>
+          <div class="entropy-glow" id="entropyGlow"></div>
+        </div>
+        <div class="entropy-ticks">
+          <span>0</span><span>40</span><span>80</span><span>128</span><span>256+</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ HISTORY ═══ -->
+    <section class="glass-card history-card">
+      <div class="history-header">
+        <div class="section-label">PASSWORD HISTORY</div>
+        <button class="clear-btn" id="clearHistoryBtn" aria-label="Clear history">CLEAR</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty">No passwords generated yet.</div>
+      </div>
+    </section>
+
+    <!-- ═══ SECURITY TIPS ═══ -->
+    <section class="glass-card tips-card">
+      <button class="tips-toggle" id="tipsToggle" aria-expanded="false">
+        <span class="section-label">SECURITY TIPS</span>
+        <span class="tips-chevron" id="tipsChevron">▼</span>
+      </button>
+      <div class="tips-body hidden" id="tipsBody">
+        <div class="tip-item">
+          <span class="tip-num">01</span>
+          <div>
+            <strong>Never reuse passwords.</strong> Each account should have a unique password. A breach on one site shouldn't compromise all your accounts.
+          </div>
+        </div>
+        <div class="tip-item">
+          <span class="tip-num">02</span>
+          <div>
+            <strong>Use a password manager.</strong> Tools like Bitwarden or 1Password store complex passwords securely so you only need to remember one master password.
+          </div>
+        </div>
+        <div class="tip-item">
+          <span class="tip-num">03</span>
+          <div>
+            <strong>Enable 2FA everywhere.</strong> Two-factor authentication adds a second layer of security. Even if your password leaks, your account stays protected.
+          </div>
+        </div>
+        <div class="tip-item">
+          <span class="tip-num">04</span>
+          <div>
+            <strong>Longer is stronger.</strong> A 20-character password is exponentially harder to crack than a 12-character one, even with fewer special characters.
+          </div>
+        </div>
+        <div class="tip-item">
+          <span class="tip-num">05</span>
+          <div>
+            <strong>Check for breaches.</strong> Regularly verify your email at haveibeenpwned.com to see if your credentials have been exposed in known data breaches.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="polite">
+    <span class="toast-icon">✓</span>
+    <span class="toast-text" id="toastText">Copied!</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
